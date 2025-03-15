@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Peligro! ¡Bob-omb!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+
+    <!-- Contenedor del Juego -->
+    <div id="game-container">
+        <canvas id="canvas"></canvas>
+        <img id="bowser-alert" src="./recursos/alerta.png" alt="Alerta de Bowser" style="position: absolute; display: none; width: 80px; height: 80px;">
+        <img id="aliento" src="./recursos/alerta.png" alt="Alerta de Bowser" style="position: absolute; display: none; width: 110px; height: 110px;">
+        <div id="scoreboard">
+            <p>Nivel: <span id="level">0</span></p>
+            <p>Tiempo: <span id="score">0</span></p>
+            <button id="start-btn" class="btn btn-primary">Iniciar Juego</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

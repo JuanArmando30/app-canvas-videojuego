@@ -1,0 +1,36 @@
+body {
+    background-color: #000000;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+#game-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    margin-left: 15px;
+}
+#canvas {
+    border: 3px solid white;
+    background-color: black;
+    width: 80vw;
+    height: 90vh;
+}
+#scoreboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 20vw;
+    height: 90vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+}
+#start-btn {
+    margin-top: 20px;
+}
