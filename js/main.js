@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
 const levelElement = document.getElementById("level");
 const bowserAlert = document.getElementById("bowser-alert");
+const bowserBreath = document.getElementById("aliento");
 
 let scoreboard = document.getElementById("scoreboard");
 let scoreAncho = scoreboard.offsetWidth;
@@ -77,35 +78,50 @@ function spawnFireball() {
     fireballs.push(new Fireball(x, y, speedX, speedY));
 }
 
-function checkCollisions() {
-    for (let i = 0; i < fireballs.length; i++) {
-        for (let j = i + 1; j < fireballs.length; j++) {
-            let dx = fireballs[i].x - fireballs[j].x;
-            let dy = fireballs[i].y - fireballs[j].y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            let minDist = fireballs[i].radius + fireballs[j].radius;
-            
-            if (distance < minDist) {
-                let tempSpeedX = fireballs[i].speedX;
-                let tempSpeedY = fireballs[i].speedY;
-                
-                fireballs[i].speedX = fireballs[j].speedX;
-                fireballs[i].speedY = fireballs[j].speedY;
-                fireballs[j].speedX = tempSpeedX;
-                fireballs[j].speedY = tempSpeedY;
-            }
+function showBowserBreath(side, x, y) {
+    bowserBreath.style.left = `${x}px`;
+    bowserBreath.style.top = `${y}px`;
+    bowserBreath.style.display = "block";
+    
+    let breathSpeed = 10;
+    let breathInterval = setInterval(() => {
+        switch (side) {
+            case 0: // Arriba -> hacia abajo
+                y += breathSpeed;
+                if (y > canvas.height - 105) {
+                    clearInterval(breathInterval);
+                    bowserBreath.style.display = "none";
+                    return;
+                }
+                break;
+            case 1: // Abajo -> hacia arriba
+                y -= breathSpeed;
+                if (y < 0) {
+                    clearInterval(breathInterval);
+                    bowserBreath.style.display = "none";
+                    return;
+                }
+                break;
+            case 2: // Izquierda -> hacia derecha
+                x += breathSpeed;
+                if (x > (canvas.width - (scoreAncho + 50))) { // Ahora el aliento llega al otro extremo
+                    clearInterval(breathInterval);
+                    bowserBreath.style.display = "none";
+                    return;
+                }
+                break;
+            case 3: // Derecha -> hacia izquierda
+                x -= breathSpeed;
+                if (x < 0) { // Ahora el aliento llega al otro extremo
+                    clearInterval(breathInterval);
+                    bowserBreath.style.display = "none";
+                    return;
+                }
+                break;
         }
-    }
-}
-
-function updateScore() {
-    score++;
-    scoreElement.textContent = score;
-}
-
-function updateLevel() {
-    level++;
-    levelElement.textContent = level;
+        bowserBreath.style.left = `${x}px`;
+        bowserBreath.style.top = `${y}px`;
+    }, 50);
 }
 
 function showBowserAlert() {
@@ -119,14 +135,14 @@ function showBowserAlert() {
             break;
         case 1: // Abajo
             x = canvas.width / 2 - bowserAlert.offsetWidth / 2;
-            y = canvas.height - 120;
+            y = canvas.height - 105;
             break;
         case 2: // Izquierda
             x = 20;
             y = canvas.height / 2 - bowserAlert.offsetHeight / 2;
             break;
         case 3: // Derecha
-            x = canvas.width - (scoreAncho + 70);
+            x = canvas.width - (scoreAncho + 50);
             y = canvas.height / 2 - bowserAlert.offsetHeight / 2;
             break;
     }
@@ -137,6 +153,7 @@ function showBowserAlert() {
     
     setTimeout(() => {
         bowserAlert.style.display = "none";
+        showBowserBreath(side, x, y);
     }, 2000);
 }
 
@@ -146,7 +163,6 @@ function updateGame() {
         fireball.update();
         fireball.draw();
     });
-    checkCollisions();
     requestAnimationFrame(updateGame);
 }
 
@@ -155,9 +171,9 @@ document.getElementById("start-btn").addEventListener("click", () => {
     level = 1;
     scoreElement.textContent = score;
     levelElement.textContent = level;
-    scoreInterval = setInterval(updateScore, 1000);
-    levelInterval = setInterval(updateLevel, 20000);
-    setInterval(showBowserAlert, 7000); // Muestra la alerta cada cierto tiempo
+    scoreInterval = setInterval(() => scoreElement.textContent = ++score, 1000);
+    levelInterval = setInterval(() => levelElement.textContent = ++level, 20000);
+    setInterval(showBowserAlert, 7000);
     
     setTimeout(() => {
         for (let i = 0; i < 15; i++) {
