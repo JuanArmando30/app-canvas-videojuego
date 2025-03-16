@@ -14,6 +14,24 @@ let level = 1;
 let scoreInterval;
 let levelInterval;
 
+class Character {
+    constructor(imageSrc, x, y) {
+        this.image = new Image();
+        this.image.src = imageSrc;
+        this.x = x;
+        this.y = y;
+        this.width = 100; // Ajusta según el tamaño de la imagen
+        this.height = 60;
+    }
+
+    draw() {
+        ctx.drawImage(this.image, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+    }
+}
+
+// Crear el personaje en el centro del canvas
+let player = new Character("./recursos/personaje.png", canvas.width / 2, canvas.height / 2);
+
 class Fireball {
     constructor(x, y, speedX, speedY) {
         this.x = x;
@@ -164,6 +182,45 @@ function showBowserAlert() {
     }, 2000); // La alerta dura 2 segundos antes de que empiecen los alientos
 }
 
+const customCursor = "url('./recursos/mouse.png') 16 16, auto"; // Reemplaza con la ruta de tu imagen
+
+scoreboard.addEventListener("mouseenter", () => {
+    scoreboard.style.cursor = customCursor;
+});
+
+scoreboard.addEventListener("mouseleave", () => {
+    scoreboard.style.cursor = "default";
+});
+
+// Velocidad del personaje
+let playerSpeed = 5;
+let keys = {};
+
+// Detectar teclas presionadas
+window.addEventListener("keydown", (event) => {
+    keys[event.key] = true;
+});
+
+window.addEventListener("keyup", (event) => {
+    keys[event.key] = false;
+});
+
+// Función para actualizar la posición del personaje
+function movePlayer() {
+    if (keys["ArrowUp"] && player.y - player.height / 2 > 0) {
+        player.y -= playerSpeed;
+    }
+    if (keys["ArrowDown"] && player.y + player.height / 2 < canvas.height) {
+        player.y += playerSpeed;
+    }
+    if (keys["ArrowLeft"] && player.x - player.width / 2 > 0) {
+        player.x -= playerSpeed;
+    }
+    if (keys["ArrowRight"] && player.x + player.width / 2 < canvas.width) {
+        player.x += playerSpeed;
+    }
+}
+
 function updateGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     fireballs.forEach((fireball) => {
@@ -173,6 +230,11 @@ function updateGame() {
     bowserBreaths = bowserBreaths.filter((breath) => breath.update());
     bowserBreaths.forEach((breath) => breath.draw());
     bowserAlerts.forEach((alert) => alert.draw());
+
+    movePlayer(); // Actualiza la posición del personaje
+    // Dibuja al personaje
+    player.draw();
+    
     requestAnimationFrame(updateGame);
 }
 

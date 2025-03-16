@@ -17,9 +17,12 @@
         <img id="bowser-alert" src="./recursos/alerta.png" alt="Alerta de Bowser" style="position: absolute; display: none; width: 60px; height: 60px;">
         <img id="aliento" src="./recursos/aliento.png" alt="Alerta de Bowser" style="position: absolute; display: none; width: 110px; height: 110px;">
         <div id="scoreboard">
-            <p>Nivel: <span id="level">0</span></p>
-            <p>Tiempo: <span id="score">0</span></p>
-            <button id="start-btn" class="btn btn-primary">Iniciar Juego</button>
+            <span class="badge bg-danger d-flex align-items-center p-3 mb-4">
+                <span>Nivel</span>
+                <span id="level" class="text-center ms-2">1</span>
+            </span>
+            <p class="mb-5">Tiempo: <span id="score">0</span></p>
+            <button id="start-btn" class="btn btn-primary mt-5">Iniciar Juego</button>
         </div>
     </div>
 
