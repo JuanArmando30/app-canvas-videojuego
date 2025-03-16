@@ -2,8 +2,6 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
 const levelElement = document.getElementById("level");
-const bowserAlert = document.getElementById("bowser-alert");
-const bowserBreath = document.getElementById("aliento");
 
 let scoreboard = document.getElementById("scoreboard");
 let scoreAncho = scoreboard.offsetWidth;
@@ -41,7 +39,50 @@ class Fireball {
     }
 }
 
+class BowserBreath {
+    constructor(x, y, side, radius = 50, color = "orange") {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.side = side;
+        this.speed = 1;
+        this.color = color;
+    }
+
+    update() {
+        switch (this.side) {
+            case 0:
+                this.y += this.speed;
+                if (this.y > canvas.height) return false;
+                break;
+            case 1:
+                this.y -= this.speed;
+                if (this.y < 0) return false;
+                break;
+            case 2:
+                this.x += this.speed;
+                if (this.x > (canvas.width)) return false;
+                break;
+            case 3:
+                this.x -= this.speed;
+                if (this.x < 0) return false;
+                break;
+        }
+        return true;
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
 let fireballs = [];
+let bowserBreaths = [];
+let bowserAlerts = [];
 
 function spawnFireball() {
     let x, y, speedX, speedY;
@@ -49,25 +90,25 @@ function spawnFireball() {
     let baseSpeed = (Math.random() * 0.5 + 0.2) * (1 + level * 0.1);
     
     switch (side) {
-        case 0: // Arriba
+        case 0:
             x = Math.random() * canvas.width;
             y = 0;
             speedX = (Math.random() - 0.5) * baseSpeed;
             speedY = baseSpeed;
             break;
-        case 1: // Abajo
+        case 1:
             x = Math.random() * canvas.width;
             y = canvas.height;
             speedX = (Math.random() - 0.5) * baseSpeed;
             speedY = -baseSpeed;
             break;
-        case 2: // Izquierda
+        case 2:
             x = 0;
             y = Math.random() * canvas.height;
             speedX = baseSpeed;
             speedY = (Math.random() - 0.5) * baseSpeed;
             break;
-        case 3: // Derecha
+        case 3:
             x = canvas.width;
             y = Math.random() * canvas.height;
             speedX = -baseSpeed;
@@ -79,49 +120,7 @@ function spawnFireball() {
 }
 
 function showBowserBreath(side, x, y) {
-    bowserBreath.style.left = `${x}px`;
-    bowserBreath.style.top = `${y}px`;
-    bowserBreath.style.display = "block";
-    
-    let breathSpeed = 10;
-    let breathInterval = setInterval(() => {
-        switch (side) {
-            case 0: // Arriba -> hacia abajo
-                y += breathSpeed;
-                if (y > canvas.height - 105) {
-                    clearInterval(breathInterval);
-                    bowserBreath.style.display = "none";
-                    return;
-                }
-                break;
-            case 1: // Abajo -> hacia arriba
-                y -= breathSpeed;
-                if (y < 0) {
-                    clearInterval(breathInterval);
-                    bowserBreath.style.display = "none";
-                    return;
-                }
-                break;
-            case 2: // Izquierda -> hacia derecha
-                x += breathSpeed;
-                if (x > (canvas.width - (scoreAncho + 50))) { // Ahora el aliento llega al otro extremo
-                    clearInterval(breathInterval);
-                    bowserBreath.style.display = "none";
-                    return;
-                }
-                break;
-            case 3: // Derecha -> hacia izquierda
-                x -= breathSpeed;
-                if (x < 0) { // Ahora el aliento llega al otro extremo
-                    clearInterval(breathInterval);
-                    bowserBreath.style.display = "none";
-                    return;
-                }
-                break;
-        }
-        bowserBreath.style.left = `${x}px`;
-        bowserBreath.style.top = `${y}px`;
-    }, 50);
+    bowserBreaths.push(new BowserBreath(x, y, side));
 }
 
 function showBowserAlert() {
@@ -129,32 +128,40 @@ function showBowserAlert() {
     let x, y;
     
     switch (side) {
-        case 0: // Arriba
-            x = canvas.width / 2 - bowserAlert.offsetWidth / 2;
-            y = 40;
+        case 0: // arriba
+            x = (Math.floor(Math.random() * ((canvas.width - 20) - 100 + 1)) + 80);
+            y = 0;
             break;
-        case 1: // Abajo
-            x = canvas.width / 2 - bowserAlert.offsetWidth / 2;
-            y = canvas.height - 105;
+        case 1: // abajo
+            x = (Math.floor(Math.random() * ((canvas.width - 20) - 100 + 1)) + 80);
+            y = canvas.height;
             break;
-        case 2: // Izquierda
-            x = 20;
-            y = canvas.height / 2 - bowserAlert.offsetHeight / 2;
+        case 2: // izquierda
+            x = 0;
+            y = (Math.floor(Math.random() * ((canvas.height - 20) - 100 + 1)) + 80);
             break;
-        case 3: // Derecha
-            x = canvas.width - (scoreAncho + 50);
-            y = canvas.height / 2 - bowserAlert.offsetHeight / 2;
+        case 3: // derecha
+            x = canvas.width;
+            y = (Math.floor(Math.random() * ((canvas.height - 20) - 100 + 1)) + 80);
             break;
     }
     
-    bowserAlert.style.left = `${x}px`;
-    bowserAlert.style.top = `${y}px`;
-    bowserAlert.style.display = "block";
+    let alert = new BowserBreath(x, y, side, 50, "yellow");
+    bowserAlerts.push(alert);
     
     setTimeout(() => {
-        bowserAlert.style.display = "none";
-        showBowserBreath(side, x, y);
-    }, 2000);
+        // Eliminar la alerta antes de comenzar los alientos de fuego
+        bowserAlerts = bowserAlerts.filter(a => a !== alert);
+
+        let interval = setInterval(() => {
+            showBowserBreath(side, x, y);
+        }, 700);
+
+        // Opcionalmente, detener los alientos después de un tiempo
+        setTimeout(() => {
+            clearInterval(interval);
+        }, 10000);
+    }, 2000); // La alerta dura 2 segundos antes de que empiecen los alientos
 }
 
 function updateGame() {
@@ -163,6 +170,9 @@ function updateGame() {
         fireball.update();
         fireball.draw();
     });
+    bowserBreaths = bowserBreaths.filter((breath) => breath.update());
+    bowserBreaths.forEach((breath) => breath.draw());
+    bowserAlerts.forEach((alert) => alert.draw());
     requestAnimationFrame(updateGame);
 }
 
@@ -172,7 +182,7 @@ document.getElementById("start-btn").addEventListener("click", () => {
     scoreElement.textContent = score;
     levelElement.textContent = level;
     scoreInterval = setInterval(() => scoreElement.textContent = ++score, 1000);
-    levelInterval = setInterval(() => levelElement.textContent = ++level, 20000);
+    levelInterval = setInterval(() => levelElement.textContent = ++level, 15000);
     setInterval(showBowserAlert, 7000);
     
     setTimeout(() => {
