@@ -173,7 +173,7 @@ function showBowserAlert() {
 
         let interval = setInterval(() => {
             showBowserBreath(side, x, y);
-        }, 700);
+        }, 300);
 
         // Opcionalmente, detener los alientos después de un tiempo
         setTimeout(() => {
@@ -221,14 +221,82 @@ function movePlayer() {
     }
 }
 
+let lives = 3;
+const livesElement = document.getElementById("lives");
+livesElement.textContent = lives;
+let invulnerable = false; // Nueva variable
+
+function checkCollision(obj) {
+    let dx = player.x - obj.x;
+    let dy = player.y - obj.y;
+    let distance = Math.sqrt(dx * dx + dy * dy); // Distancia entre el centro del personaje y el objeto
+
+    let collisionDistance = (player.width / 2) + obj.radius; // Suma de radios efectivos
+    return distance < collisionDistance; // Solo cuenta como colisión si realmente se tocan
+}
+
+function loseLife() {
+    if (invulnerable) return; // No perder vida si es invulnerable
+    
+    lives--;
+    livesElement.textContent = lives;
+    invulnerable = true; // Activar invulnerabilidad temporal
+
+    if (lives > 0) {
+        console.log(`Vida perdida. Vidas restantes: ${lives}`);
+    } else {
+        console.log("¡Juego terminado!");
+        gameOver = true; // Detiene el juego
+
+        // Detiene la actualización del tiempo y nivel
+        clearInterval(scoreInterval);
+        clearInterval(levelInterval);
+
+        setTimeout(() => {
+            document.getElementById("game-over-screen").style.display = "flex"; // Muestra el Game Over
+        }, 25); // Espera 0.025 segundos antes de recargar
+    }
+
+    // Desactivar invulnerabilidad después de 1 segundo
+    setTimeout(() => {
+        invulnerable = false;
+    }, 2000);
+}
+
+// Evento para reiniciar el juego
+document.getElementById("restart-btn").addEventListener("click", () => {
+    location.reload(); // Recarga la página para reiniciar el juego
+});
+
+let gameOver = false; // Controla si el juego ha terminado
+
 function updateGame() {
+
+    if (gameOver) return; // Si el juego ha terminado, no sigue actualizando
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
     fireballs.forEach((fireball) => {
         fireball.update();
         fireball.draw();
+        
+        if (checkCollision(fireball)) {
+            loseLife();
+            fireballs = fireballs.filter(f => f !== fireball); // Eliminar la bola de fuego que impactó
+        }
     });
+
     bowserBreaths = bowserBreaths.filter((breath) => breath.update());
-    bowserBreaths.forEach((breath) => breath.draw());
+    bowserBreaths.forEach((breath) => {
+        breath.update();
+        breath.draw();
+        
+        if (checkCollision(breath)) {
+            loseLife();
+            bowserBreaths = bowserBreaths.filter(b => b !== breath); // Eliminar el aliento de Bowser impactado
+        }
+    });
+
     bowserAlerts.forEach((alert) => alert.draw());
 
     movePlayer(); // Actualiza la posición del personaje
