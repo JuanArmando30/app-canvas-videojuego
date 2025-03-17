@@ -49,22 +49,30 @@ class Fireball {
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "orange";
         ctx.fill();
-        ctx.strokeStyle = "orange";
+        ctx.strokeStyle = "red";
         ctx.stroke();
         ctx.closePath();
     }
 }
 
 class BowserBreath {
-    constructor(x, y, side, radius = 50, color = "orange") {
+    
+    constructor(x, y, side) {
+        this.image = new Image();
+        this.image.src = "./recursos/aliento.png"; // Asegúrate de la ruta correcta
         this.x = x;
         this.y = y;
-        this.radius = radius;
+        this.width = 130;
+        this.height = 130;
         this.side = side;
         this.speed = 1;
-        this.color = color;
+        this.loaded = false; // Bandera para saber si la imagen está cargada
+
+        this.image.onload = () => {
+            this.loaded = true; // La imagen está lista para usarse
+        };
     }
 
     update() {
@@ -90,11 +98,9 @@ class BowserBreath {
     }
 
     draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.closePath();
+        if (this.loaded) {
+            ctx.drawImage(this.image, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        }
     }
 }
 
@@ -173,7 +179,7 @@ function showBowserAlert() {
 
         let interval = setInterval(() => {
             showBowserBreath(side, x, y);
-        }, 300);
+        }, 250);
 
         // Opcionalmente, detener los alientos después de un tiempo
         setTimeout(() => {
@@ -222,28 +228,38 @@ function movePlayer() {
 }
 
 let lives = 3;
-const livesElement = document.getElementById("lives");
-livesElement.textContent = lives;
+const hearts = document.querySelectorAll(".life-heart");
+
 let invulnerable = false; // Nueva variable
 
 function checkCollision(obj) {
-    let dx = player.x - obj.x;
-    let dy = player.y - obj.y;
-    let distance = Math.sqrt(dx * dx + dy * dy); // Distancia entre el centro del personaje y el objeto
-
-    let collisionDistance = (player.width / 2) + obj.radius; // Suma de radios efectivos
-    return distance < collisionDistance; // Solo cuenta como colisión si realmente se tocan
+    if (obj instanceof BowserBreath) {
+        // Detección de colisión rectangular (AABB)
+        return (
+            player.x + player.width / 2 > obj.x - obj.width / 2 &&
+            player.x - player.width / 2 < obj.x + obj.width / 2 &&
+            player.y + player.height / 2 > obj.y - obj.height / 2 &&
+            player.y - player.height / 2 < obj.y + obj.height / 2
+        );
+    } else {
+        // Detección de colisión circular (para bolas de fuego)
+        let dx = player.x - obj.x;
+        let dy = player.y - obj.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        let collisionDistance = (player.width / 2) + obj.radius;
+        return distance < collisionDistance;
+    }
 }
 
 function loseLife() {
     if (invulnerable) return; // No perder vida si es invulnerable
     
     lives--;
-    livesElement.textContent = lives;
     invulnerable = true; // Activar invulnerabilidad temporal
 
     if (lives > 0) {
         console.log(`Vida perdida. Vidas restantes: ${lives}`);
+        hearts[lives].style.display = "none"; // Esconde un corazón
     } else {
         console.log("¡Juego terminado!");
         gameOver = true; // Detiene el juego
@@ -252,15 +268,17 @@ function loseLife() {
         clearInterval(scoreInterval);
         clearInterval(levelInterval);
 
+        hearts[lives].style.display = "none"; // Esconde un corazón
+
         setTimeout(() => {
             document.getElementById("game-over-screen").style.display = "flex"; // Muestra el Game Over
         }, 25); // Espera 0.025 segundos antes de recargar
     }
 
-    // Desactivar invulnerabilidad después de 1 segundo
+    // Desactivar invulnerabilidad después de .6 segundos
     setTimeout(() => {
         invulnerable = false;
-    }, 2000);
+    }, 600);
 }
 
 // Evento para reiniciar el juego

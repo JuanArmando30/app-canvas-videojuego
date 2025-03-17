@@ -1,34 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¡Peligro! ¡Bob-omb!</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body>
 
     <!-- Contenedor del Juego -->
     <div id="game-container">
         <canvas id="canvas"></canvas>
-        <img id="bowser-alert" src="./recursos/alerta.png" alt="Alerta de Bowser" style="position: absolute; display: none; width: 60px; height: 60px;">
-        <img id="aliento" src="./recursos/aliento.png" alt="Alerta de Bowser" style="position: absolute; display: none; width: 110px; height: 110px;">
+        <img id="bowser-alert" src="./recursos/alerta.png" alt="Alerta de Bowser"
+            style="position: absolute; display: none; width: 60px; height: 60px;">
         <div id="scoreboard">
             <span class="badge bg-danger d-flex align-items-center p-3 mb-4">
                 <span>Nivel</span>
                 <span id="level" class="text-center ms-2">1</span>
             </span>
-            <p class="mb-5">Vidas: <span id="lives">0</span></p>
+            <div id="lives-container">
+                <img src="./recursos/heart.png" class="life-heart">
+                <img src="./recursos/heart.png" class="life-heart">
+                <img src="./recursos/heart.png" class="life-heart">
+            </div>
             <p class="mb-5">Tiempo: <span id="score">0</span></p>
-            <button id="start-btn" class="btn btn-primary mt-5">Iniciar Juego</button>
+
+            <button id="start-btn" class="btn-17 mt-4">
+                <span class="text-container">
+                    <span class="text">PLAY</span>
+                </span>
+            </button>
+
         </div>
         <div id="game-over-screen">
-            <h1>¡Has perdido!</h1>
-            <button id="restart-btn">Reiniciar Juego</button>
-        </div>        
+            <img id="gameover" src="./recursos/game over.png">
+            <button id="restart-btn" class="btn-17 mt-4">
+                <span class="text-container">
+                    <span class="text">RESET</span>
+                </span>
+            </button>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -36,4 +52,5 @@
         crossorigin="anonymous"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
