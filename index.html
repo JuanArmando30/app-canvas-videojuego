@@ -7,7 +7,7 @@
     <title>¡Peligro! ¡Bob-omb!</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    <link rel="icon" type="image/png" href="./recursos/personaje.png">
     <link rel="stylesheet" href="./css/styles.css">
 </head>
 
@@ -16,19 +16,29 @@
     <!-- Contenedor del Juego -->
     <div id="game-container">
         <canvas id="canvas"></canvas>
-        <img id="bowser-alert" src="./recursos/alerta.png" alt="Alerta de Bowser"
-            style="position: absolute; display: none; width: 60px; height: 60px;">
         <div id="scoreboard">
-            <span class="badge bg-danger d-flex align-items-center p-3 mb-4">
-                <span>Nivel</span>
-                <span id="level" class="text-center ms-2">1</span>
-            </span>
-            <div id="lives-container">
+            <div id="lives-container" class="ms-4">
                 <img src="./recursos/heart.png" class="life-heart">
                 <img src="./recursos/heart.png" class="life-heart">
                 <img src="./recursos/heart.png" class="life-heart">
             </div>
-            <p class="mb-5">Tiempo: <span id="score">0</span></p>
+
+            <div id="hud">
+                <div class="hud-item">
+                    <span class="hud-label">Tiempo</span>
+                    <span class="hud-value" id="score">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Nivel</span>
+                    <span class="hud-value" id="level">1</span>
+                </div>
+            </div>
+
+            <button class="btn-17 mt-4">
+                <span class="text-container" id="instructions-btn">
+                    <span class="text">INSTRUCCIONES</span>
+                </span>
+            </button>
 
             <button id="start-btn" class="btn-17 mt-4">
                 <span class="text-container">
@@ -46,6 +56,22 @@
             </button>
         </div>
     </div>
+
+    <div id="instructions-screen" class="overlay">
+        <div class="instructions-content">
+            <h1 class="mb-4">📜 Instrucciones</h1>
+            <p>🕹 Usa las flechas del teclado para moverte</p>
+            <p>🔥 Esquiva las bolas de fuego de Bowser</p>
+            <p>🔥 Las alertas en rojo son el aliento de Bowser</p>
+            <p>⏳ Sobrevive el mayor tiempo posible</p>
+            <p>⚠️ Cada nivel aumenta la dificultad</p>
+            <button id="close-instructions-btn" class="btn-17 mt-4">
+                <span class="text-container">
+                    <span class="text">CLOSE</span>
+                </span>
+            </button>
+        </div>
+    </div>    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

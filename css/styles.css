@@ -17,7 +17,6 @@ body {
 }
 #canvas {
     border: 3px solid white;
-    background-color: black;
     width: 80vw;
     height: 90vh;
 }
@@ -74,6 +73,77 @@ body {
     width: 60px;
     height: 60px;
 }
+#instructions-screen {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente */
+  color: white;
+  z-index: 1000; /* Asegura que esté encima */
+  justify-content: center;
+  align-items: center;
+}
+.instructions-content {
+  background-color: #222;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 50%;
+  max-width: 500px;
+}
+#close-instructions-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: rgb(255, 0, 0);
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#close-instructions-btn:hover {
+  background-color: rgb(255, 255, 255);
+}
+#hud {
+  position: fixed;
+  top: 42px;
+  left: 75%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  border: 4px solid #ffcc00;
+  box-shadow: 0px 0px 10px rgba(255, 204, 0, 0.8);
+  font-family: 'Press Start 2P', cursive; /* Fuente estilo retro */
+  color: white;
+  font-size: 18px;
+  text-align: center;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hud-label {
+  font-size: 14px;
+  color: #ffcc00;
+  text-transform: uppercase;
+}
+
+.hud-value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff3333; /* Rojo llamativo */
+}
+
 
 /* From Uiverse.io by doniaskima */ 
 .btn-17,
