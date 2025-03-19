@@ -20,8 +20,8 @@ class Character {
         this.image.src = imageSrc;
         this.x = x;
         this.y = y;
-        this.width = 100; // Ajusta según el tamaño de la imagen
-        this.height = 60;
+        this.width = 80; // Ajusta según el tamaño de la imagen
+        this.height = 40;
     }
 
     draw() {
@@ -58,7 +58,7 @@ class Fireball {
 }
 
 class BowserBreath {
-    
+
     constructor(x, y, side) {
         this.image = new Image();
         this.image.src = "./recursos/aliento.png"; // Asegúrate de la ruta correcta
@@ -136,7 +136,7 @@ function spawnFireball() {
 
     // Velocidad escala con el nivel (mínimo 0.2, aumentando con el nivel)
     let baseSpeed = (Math.random() * 0.5 + 0.2) * (1 + level * 0.1);
-    
+
     switch (side) {
         case 0:
             x = Math.random() * canvas.width;
@@ -163,7 +163,7 @@ function spawnFireball() {
             speedY = (Math.random() - 0.5) * baseSpeed;
             break;
     }
-    
+
     fireballs.push(new Fireball(x, y, speedX, speedY));
 }
 
@@ -175,7 +175,7 @@ function showBowserAlert() {
     let side = Math.floor(Math.random() * 4);
     let x, y;
     let margin = 50; // Margen de seguridad
-    
+
     switch (side) {
         case 0: // arriba
             x = (Math.floor(Math.random() * ((canvas.width - 20) - 100 + 1)) + 80);
@@ -194,10 +194,10 @@ function showBowserAlert() {
             y = (Math.floor(Math.random() * ((canvas.height - 20) - 100 + 1)) + 80);
             break;
     }
-    
+
     let alert = new BowserAlert(x, y);
     bowserAlerts.push(alert);
-    
+
     setTimeout(() => {
         // Eliminar la alerta antes de comenzar los alientos de fuego
         bowserAlerts = bowserAlerts.filter(a => a !== alert);
@@ -209,7 +209,7 @@ function showBowserAlert() {
         // Opcionalmente, detener los alientos después de un tiempo
         setTimeout(() => {
             clearInterval(interval);
-        }, 10000);
+        }, 7000);
     }, 2000); // La alerta dura 2 segundos antes de que empiecen los alientos
 }
 
@@ -288,7 +288,7 @@ const lifeLostSound = new Audio("./recursos/choca.mp3");  // Asegúrate de tener
 
 function loseLife() {
     if (invulnerable) return; // No perder vida si es invulnerable
-    
+
     lives--;
     invulnerable = true; // Activar invulnerabilidad temporal
 
@@ -344,11 +344,11 @@ function updateGame() {
 
     // Dibujar la imagen de fondo antes de todo
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    
+
     fireballs.forEach((fireball) => {
         fireball.update();
         fireball.draw();
-        
+
         if (checkCollision(fireball)) {
             loseLife();
             fireballs = fireballs.filter(f => f !== fireball); // Eliminar la bola de fuego que impactó
@@ -359,7 +359,7 @@ function updateGame() {
     bowserBreaths.forEach((breath) => {
         breath.update();
         breath.draw();
-        
+
         if (checkCollision(breath)) {
             loseLife();
             bowserBreaths = bowserBreaths.filter(b => b !== breath); // Eliminar el aliento de Bowser impactado
@@ -371,7 +371,7 @@ function updateGame() {
     movePlayer(); // Actualiza la posición del personaje
     // Dibuja al personaje
     player.draw();
-    
+
     requestAnimationFrame(updateGame);
 }
 
@@ -379,14 +379,14 @@ function updateGame() {
 const startSound = new Audio("./recursos/inicio.mp3");
 
 document.getElementById("start-btn").addEventListener("click", () => {
-    
+
     startSound.play(); // Reproducir sonido al iniciar el juego
 
     score = 0;
     level = 1;
     scoreElement.textContent = score;
     levelElement.textContent = level;
-    
+
     scoreInterval = setInterval(() => scoreElement.textContent = ++score, 1000);
 
     levelInterval = setInterval(() => {
@@ -423,3 +423,46 @@ document.getElementById("instructions-btn").addEventListener("click", () => {
 document.getElementById("close-instructions-btn").addEventListener("click", () => {
     document.getElementById("instructions-screen").style.display = "none";
 });
+
+document.getElementById("ranking-btn").addEventListener("click", () => {
+    loadRanking(); // Cargar el ranking antes de mostrarlo
+    document.getElementById("ranking-screen").style.display = "flex";
+});
+
+document.getElementById("close-ranking-btn").addEventListener("click", () => {
+    document.getElementById("ranking-screen").style.display = "none";
+});
+
+document.getElementById("save-score-btn").addEventListener("click", () => {
+    let playerName = document.getElementById("player-name-input").value.trim() || "Jugador";
+    localStorage.setItem("playerName", playerName);
+    saveScore(playerName, score);
+    location.reload(); // Recarga la página para reiniciar el juego
+});
+
+function saveScore(playerName, playerScore) {
+    let ranking = JSON.parse(localStorage.getItem("ranking")) || [];
+
+    ranking.push({ name: playerName, score: playerScore });
+
+    // Ordenar de mayor a menor puntaje
+    ranking.sort((a, b) => b.score - a.score);
+
+    // Guardar solo los mejores 10
+    ranking = ranking.slice(0, 10);
+
+    localStorage.setItem("ranking", JSON.stringify(ranking));
+}
+
+function loadRanking() {
+    let ranking = JSON.parse(localStorage.getItem("ranking")) || [];
+    let rankingList = document.getElementById("ranking-list");
+
+    rankingList.innerHTML = ""; // Limpiar lista
+
+    ranking.forEach((player, index) => {
+        let listItem = document.createElement("li");
+        listItem.textContent = `${index + 1}. ${player.name} - ${player.score} pts`;
+        rankingList.appendChild(listItem);
+    });
+}

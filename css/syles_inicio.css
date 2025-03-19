@@ -1,0 +1,60 @@
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: url('./recursos/fondo-inicio.png') no-repeat center center/cover;
+    text-align: center;
+}
+
+.container {
+    flex-grow: 1; /* Hace que el contenido principal ocupe el espacio disponible */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 36px;
+    color: white;
+    text-shadow: 3px 3px 6px black;
+}
+
+.start-button {
+    background-color: #ffcc00;
+    color: #000;
+    font-size: 24px;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    box-shadow: 3px 3px 6px black;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, filter 0.3s;
+}
+
+/* Efecto hover */
+.start-button:hover {
+    transform: scale(1.15) rotate(2deg); /* Se agranda y rota ligeramente */
+    background-color: #ff8800; /* Cambia a un tono más vibrante */
+    box-shadow: 0 0 20px #ffcc00, 0 0 40px #ff8800; /* Brillo animado */
+    filter: brightness(1.2); /* Aumenta el brillo */
+}
+
+#img-inicio{
+    width: 300px;
+}
+
+/* Footer fijo abajo */
+footer {
+    width: 100%;
+    background-color: #212529;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
